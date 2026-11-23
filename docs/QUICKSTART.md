@@ -1,3 +1,5 @@
+For an end-to-end reviewed repository QA task and deliverable report, see [Task Edition](TASKS.md). The base workflow demo below remains supported.
+
 # Quick start
 
 ## Requirements

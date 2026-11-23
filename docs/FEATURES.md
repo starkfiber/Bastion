@@ -1,3 +1,7 @@
+# Task Edition additions · 0.6.0 candidate
+
+Reviewed repository QA, pinned package tests, checked HTML/Markdown exports, native execution counters and bounded receipt-backed metrics are implemented locally. See [task usage](TASKS.md). The earlier feature contracts below remain in force.
+
 # Features and current boundaries
 
 | Area | Implemented | Boundary |

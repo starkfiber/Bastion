@@ -1,3 +1,21 @@
+# Control Edition observations · 0.7.0
+
+One native-gated repository QA task passed 97 tests with execution measured at 30,656.265 ms. The fresh CLI cycle took 30,897.866 ms and receipt reuse took 306.949 ms. The two native execution gates totaled 18.83 ms. Host load and revisions differ from earlier runs; no speed advantage, regression estimate or rival comparison is established.
+
+[Current qualification](assets/control-qualification.json) · [Definitions](TASKS.md)
+
+## Earlier observations
+
+# Current task observations · 0.6.0 candidate
+
+The corrected native-backed repository QA task ran 92 tests successfully. One observation measured execution at 18,316.472 ms; the fresh CLI cycle was 18,631.887 ms and receipt reuse was 177.661 ms. Native start/outcome gates made 2 calls totaling 20.398 ms including startup. Calls inside child tests are outside that counter. This is neither a throughput benchmark nor a Python/native backend comparison. Host load was uncontrolled.
+
+[Qualification data](assets/task-edition-qualification.json) · [Metrics definitions](TASKS.md)
+
+## Historical 0.5 microbenchmarks
+
+These samples were captured before Task Edition and describe its tiny pure fixture, not the current repository QA task.
+
 # Measured local speed
 
 These results describe this machine and tiny synthetic fixtures. They are not model-inference, autonomous-MVP, concurrency, production-capacity or competitor benchmarks.
