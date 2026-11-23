@@ -1,0 +1,613 @@
+{
+  "version": "0.5.0",
+  "scope": "synthetic six-node CLI fixture; temporary state removed after capture",
+  "pathsRedacted": true,
+  "sum": 6,
+  "receiptReused": true,
+  "contextNodes": 2,
+  "trace": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "plan",
+        "workflow.json"
+      ],
+      "exitCode": 0,
+      "response": {
+        "digest": "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677",
+        "plan": {
+          "capabilities": {
+            "data.assert_equal": {
+              "effect": "pure",
+              "required": [
+                "actual",
+                "expected"
+              ],
+              "version": 1
+            },
+            "data.select_fields": {
+              "effect": "pure",
+              "required": [
+                "value",
+                "fields"
+              ],
+              "version": 1
+            },
+            "data.sha256": {
+              "effect": "pure",
+              "required": [
+                "value"
+              ],
+              "version": 1
+            },
+            "data.value": {
+              "effect": "pure",
+              "required": [
+                "value"
+              ],
+              "version": 1
+            },
+            "knowledge.ingest": {
+              "effect": "project-read-state-write",
+              "required": [
+                "path"
+              ],
+              "version": 1
+            },
+            "knowledge.search": {
+              "effect": "state-read",
+              "required": [
+                "query"
+              ],
+              "version": 1
+            },
+            "math.sum_u32": {
+              "effect": "pure",
+              "required": [
+                "values"
+              ],
+              "version": 1
+            }
+          },
+          "files": {
+            "brief.txt": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85"
+          },
+          "knowledgeRoot": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "knowledgeSnapshot": [],
+          "native": null,
+          "order": [
+            "brief",
+            "numbers",
+            "recall",
+            "sum",
+            "check",
+            "fingerprint"
+          ],
+          "runtimeDigest": "b1620b0f3f38307d47bb876868b19b0a44b62c6deb6f3d362c54aeadebd8aae7",
+          "schema": "bastion.plan.v1",
+          "skills": [],
+          "workflow": {
+            "nodes": [
+              {
+                "capability": "knowledge.ingest",
+                "id": "brief",
+                "params": {
+                  "path": "brief.txt"
+                }
+              },
+              {
+                "after": [
+                  "brief"
+                ],
+                "capability": "knowledge.search",
+                "id": "recall",
+                "params": {
+                  "query": "model"
+                }
+              },
+              {
+                "capability": "data.value",
+                "id": "numbers",
+                "params": {
+                  "value": [
+                    1,
+                    2,
+                    3
+                  ]
+                }
+              },
+              {
+                "capability": "math.sum_u32",
+                "id": "sum",
+                "params": {
+                  "values": {
+                    "$ref": "numbers"
+                  }
+                }
+              },
+              {
+                "capability": "data.assert_equal",
+                "id": "check",
+                "params": {
+                  "actual": {
+                    "$ref": "sum"
+                  },
+                  "expected": 6
+                }
+              },
+              {
+                "capability": "data.sha256",
+                "id": "fingerprint",
+                "params": {
+                  "value": {
+                    "$ref": "recall"
+                  }
+                }
+              }
+            ],
+            "planner": {
+              "authority": "proposal-only",
+              "model": "none",
+              "provider": "human"
+            },
+            "schema": "bastion.workflow.v1",
+            "title": "Persistent knowledge and independently checked calculation"
+          },
+          "workspace": "/private<demo-workspace>"
+        },
+        "run": "b6709383ce1b49a3a25b170eea066c6b",
+        "state": "draft"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "inspect",
+        "b6709383ce1b49a3a25b170eea066c6b"
+      ],
+      "exitCode": 0,
+      "response": {
+        "approved": false,
+        "digest": "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677",
+        "error": null,
+        "plan": {
+          "capabilities": {
+            "data.assert_equal": {
+              "effect": "pure",
+              "required": [
+                "actual",
+                "expected"
+              ],
+              "version": 1
+            },
+            "data.select_fields": {
+              "effect": "pure",
+              "required": [
+                "value",
+                "fields"
+              ],
+              "version": 1
+            },
+            "data.sha256": {
+              "effect": "pure",
+              "required": [
+                "value"
+              ],
+              "version": 1
+            },
+            "data.value": {
+              "effect": "pure",
+              "required": [
+                "value"
+              ],
+              "version": 1
+            },
+            "knowledge.ingest": {
+              "effect": "project-read-state-write",
+              "required": [
+                "path"
+              ],
+              "version": 1
+            },
+            "knowledge.search": {
+              "effect": "state-read",
+              "required": [
+                "query"
+              ],
+              "version": 1
+            },
+            "math.sum_u32": {
+              "effect": "pure",
+              "required": [
+                "values"
+              ],
+              "version": 1
+            }
+          },
+          "files": {
+            "brief.txt": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85"
+          },
+          "knowledgeRoot": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "knowledgeSnapshot": [],
+          "native": null,
+          "order": [
+            "brief",
+            "numbers",
+            "recall",
+            "sum",
+            "check",
+            "fingerprint"
+          ],
+          "runtimeDigest": "b1620b0f3f38307d47bb876868b19b0a44b62c6deb6f3d362c54aeadebd8aae7",
+          "schema": "bastion.plan.v1",
+          "skills": [],
+          "workflow": {
+            "nodes": [
+              {
+                "capability": "knowledge.ingest",
+                "id": "brief",
+                "params": {
+                  "path": "brief.txt"
+                }
+              },
+              {
+                "after": [
+                  "brief"
+                ],
+                "capability": "knowledge.search",
+                "id": "recall",
+                "params": {
+                  "query": "model"
+                }
+              },
+              {
+                "capability": "data.value",
+                "id": "numbers",
+                "params": {
+                  "value": [
+                    1,
+                    2,
+                    3
+                  ]
+                }
+              },
+              {
+                "capability": "math.sum_u32",
+                "id": "sum",
+                "params": {
+                  "values": {
+                    "$ref": "numbers"
+                  }
+                }
+              },
+              {
+                "capability": "data.assert_equal",
+                "id": "check",
+                "params": {
+                  "actual": {
+                    "$ref": "sum"
+                  },
+                  "expected": 6
+                }
+              },
+              {
+                "capability": "data.sha256",
+                "id": "fingerprint",
+                "params": {
+                  "value": {
+                    "$ref": "recall"
+                  }
+                }
+              }
+            ],
+            "planner": {
+              "authority": "proposal-only",
+              "model": "none",
+              "provider": "human"
+            },
+            "schema": "bastion.workflow.v1",
+            "title": "Persistent knowledge and independently checked calculation"
+          },
+          "workspace": "/private<demo-workspace>"
+        },
+        "receipt": null,
+        "run": "b6709383ce1b49a3a25b170eea066c6b",
+        "state": "draft",
+        "tasks": [
+          {
+            "node": "brief",
+            "params": null,
+            "result": null,
+            "result_digest": null,
+            "run": "b6709383ce1b49a3a25b170eea066c6b",
+            "state": "pending"
+          },
+          {
+            "node": "check",
+            "params": null,
+            "result": null,
+            "result_digest": null,
+            "run": "b6709383ce1b49a3a25b170eea066c6b",
+            "state": "pending"
+          },
+          {
+            "node": "fingerprint",
+            "params": null,
+            "result": null,
+            "result_digest": null,
+            "run": "b6709383ce1b49a3a25b170eea066c6b",
+            "state": "pending"
+          },
+          {
+            "node": "numbers",
+            "params": null,
+            "result": null,
+            "result_digest": null,
+            "run": "b6709383ce1b49a3a25b170eea066c6b",
+            "state": "pending"
+          },
+          {
+            "node": "recall",
+            "params": null,
+            "result": null,
+            "result_digest": null,
+            "run": "b6709383ce1b49a3a25b170eea066c6b",
+            "state": "pending"
+          },
+          {
+            "node": "sum",
+            "params": null,
+            "result": null,
+            "result_digest": null,
+            "run": "b6709383ce1b49a3a25b170eea066c6b",
+            "state": "pending"
+          }
+        ]
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "approve",
+        "b6709383ce1b49a3a25b170eea066c6b",
+        "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677"
+      ],
+      "exitCode": 0,
+      "response": {
+        "digest": "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677",
+        "run": "b6709383ce1b49a3a25b170eea066c6b",
+        "state": "approved"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "run",
+        "b6709383ce1b49a3a25b170eea066c6b",
+        "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677"
+      ],
+      "exitCode": 0,
+      "response": {
+        "receipt": {
+          "externalEffects": false,
+          "isolation": "trusted-builtins-only; no OS sandbox",
+          "outputs": {
+            "brief": {
+              "id": "352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+              "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+              "source": "brief.txt"
+            },
+            "check": {
+              "passed": true
+            },
+            "fingerprint": "6a69db8c754c56107a4b35bb7e164e2472596ab2bf7a93947753f3cc095c6b93",
+            "numbers": [
+              1,
+              2,
+              3
+            ],
+            "recall": [
+              {
+                "content": "BASTION keeps project knowledge, skills, work graphs and evidence across model changes.\nAn executed synthetic trial is not a real-world experience or an approved lesson.\n",
+                "id": "352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+                "provenance": "user-selected-project-file; data-not-authority",
+                "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+                "source": "brief.txt"
+              }
+            ],
+            "sum": 6
+          },
+          "planDigest": "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677",
+          "proof": "bounded-local-workflow",
+          "run": "b6709383ce1b49a3a25b170eea066c6b",
+          "runtimeDigest": "b1620b0f3f38307d47bb876868b19b0a44b62c6deb6f3d362c54aeadebd8aae7",
+          "schema": "bastion.receipt.v1"
+        },
+        "receiptDigest": "ef607bef3e6354aaf18af6762649c37399fcbb73fa7760bd739f5673aa51d4db",
+        "run": "b6709383ce1b49a3a25b170eea066c6b",
+        "state": "verified"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "verify",
+        "b6709383ce1b49a3a25b170eea066c6b"
+      ],
+      "exitCode": 0,
+      "response": {
+        "audit": {
+          "events": 16,
+          "head": "3665a0c6fbe8dea7072d57f30c06f796fccde6944d0ff70333ce06a530bad31f",
+          "scope": "local-integrity"
+        },
+        "receipt": {
+          "externalEffects": false,
+          "isolation": "trusted-builtins-only; no OS sandbox",
+          "outputs": {
+            "brief": {
+              "id": "352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+              "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+              "source": "brief.txt"
+            },
+            "check": {
+              "passed": true
+            },
+            "fingerprint": "6a69db8c754c56107a4b35bb7e164e2472596ab2bf7a93947753f3cc095c6b93",
+            "numbers": [
+              1,
+              2,
+              3
+            ],
+            "recall": [
+              {
+                "content": "BASTION keeps project knowledge, skills, work graphs and evidence across model changes.\nAn executed synthetic trial is not a real-world experience or an approved lesson.\n",
+                "id": "352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+                "provenance": "user-selected-project-file; data-not-authority",
+                "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+                "source": "brief.txt"
+              }
+            ],
+            "sum": 6
+          },
+          "planDigest": "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677",
+          "proof": "bounded-local-workflow",
+          "run": "b6709383ce1b49a3a25b170eea066c6b",
+          "runtimeDigest": "b1620b0f3f38307d47bb876868b19b0a44b62c6deb6f3d362c54aeadebd8aae7",
+          "schema": "bastion.receipt.v1"
+        },
+        "receiptDigest": "ef607bef3e6354aaf18af6762649c37399fcbb73fa7760bd739f5673aa51d4db",
+        "run": "b6709383ce1b49a3a25b170eea066c6b",
+        "state": "verified"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "run",
+        "b6709383ce1b49a3a25b170eea066c6b",
+        "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677"
+      ],
+      "exitCode": 0,
+      "response": {
+        "audit": {
+          "events": 16,
+          "head": "3665a0c6fbe8dea7072d57f30c06f796fccde6944d0ff70333ce06a530bad31f",
+          "scope": "local-integrity"
+        },
+        "receipt": {
+          "externalEffects": false,
+          "isolation": "trusted-builtins-only; no OS sandbox",
+          "outputs": {
+            "brief": {
+              "id": "352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+              "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+              "source": "brief.txt"
+            },
+            "check": {
+              "passed": true
+            },
+            "fingerprint": "6a69db8c754c56107a4b35bb7e164e2472596ab2bf7a93947753f3cc095c6b93",
+            "numbers": [
+              1,
+              2,
+              3
+            ],
+            "recall": [
+              {
+                "content": "BASTION keeps project knowledge, skills, work graphs and evidence across model changes.\nAn executed synthetic trial is not a real-world experience or an approved lesson.\n",
+                "id": "352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+                "provenance": "user-selected-project-file; data-not-authority",
+                "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+                "source": "brief.txt"
+              }
+            ],
+            "sum": 6
+          },
+          "planDigest": "1a4dfd6c55c6345acceb4ee69b1affbbeba206dfc4f88126e14b337ef4a5f677",
+          "proof": "bounded-local-workflow",
+          "run": "b6709383ce1b49a3a25b170eea066c6b",
+          "runtimeDigest": "b1620b0f3f38307d47bb876868b19b0a44b62c6deb6f3d362c54aeadebd8aae7",
+          "schema": "bastion.receipt.v1"
+        },
+        "receiptDigest": "ef607bef3e6354aaf18af6762649c37399fcbb73fa7760bd739f5673aa51d4db",
+        "run": "b6709383ce1b49a3a25b170eea066c6b",
+        "state": "verified"
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "bastion",
+        "--workspace",
+        "<demo-workspace>",
+        "brain",
+        "model"
+      ],
+      "exitCode": 0,
+      "response": {
+        "authority": "context-only; no execution permission",
+        "digest": "04d5b1736312c79a4a6e7db456d244ec85dbe76e4120e657c13870619e08e403",
+        "edges": [
+          {
+            "relation": "contains",
+            "source": "project",
+            "target": "knowledge:352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b"
+          }
+        ],
+        "excluded": [],
+        "modelRequired": false,
+        "nodes": [
+          {
+            "authority": "none",
+            "id": "project",
+            "kind": "project"
+          },
+          {
+            "authority": "data-only",
+            "excerpt": "BASTION keeps project knowledge, skills, work graphs and evidence across model changes.\nAn executed synthetic trial is not a real-world experience or an approved lesson.\n",
+            "id": "knowledge:352c1a6d66577f7c5f4b80983481314dddbb9885321c14d981f232daa756d22b",
+            "kind": "knowledge",
+            "provenance": "user-selected-project-file; data-not-authority",
+            "sha256": "5ab7338ed50d514efc6d41aa73afe0ba31c7aba0642b89e46e5b874b21980a85",
+            "source": "brief.txt",
+            "truncated": false
+          }
+        ],
+        "query": "model",
+        "retrieval": {
+          "completeProjectMap": false,
+          "limitPerCollection": 20,
+          "method": "literal-substring"
+        },
+        "schema": "bastion.context.v1",
+        "scope": "this-project"
+      }
+    }
+  ]
+}
