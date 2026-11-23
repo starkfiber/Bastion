@@ -1,0 +1,13 @@
+{
+  "schema": "bastion.workflow.v1",
+  "title": "Persistent knowledge and independently checked calculation",
+  "planner": {"provider": "human", "model": "none", "authority": "proposal-only"},
+  "nodes": [
+    {"id": "brief", "capability": "knowledge.ingest", "params": {"path": "brief.txt"}},
+    {"id": "recall", "capability": "knowledge.search", "params": {"query": "model"}, "after": ["brief"]},
+    {"id": "numbers", "capability": "data.value", "params": {"value": [1, 2, 3]}},
+    {"id": "sum", "capability": "math.sum_u32", "params": {"values": {"$ref": "numbers"}}},
+    {"id": "check", "capability": "data.assert_equal", "params": {"actual": {"$ref": "sum"}, "expected": 6}},
+    {"id": "fingerprint", "capability": "data.sha256", "params": {"value": {"$ref": "recall"}}}
+  ]
+}
