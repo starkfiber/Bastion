@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bastion-os-foundation"
+version = "0.5.0"
+description = "Model-neutral local orchestration and evidence foundation"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[project.scripts]
+bastion = "bastion.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["bastion*"]
