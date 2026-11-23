@@ -154,7 +154,39 @@ def approve(runtime, identity, claimed):
     return {"mission": identity, "digest": claimed, "state": "approved"}
 
 
-def run_child(runtime, ref, deadline, output_budget, state_budget):
+class MissionCancelled(BastionError):
+    pass
+
+
+def stop_requested(runtime,identity):
+    with runtime.store.connect() as db:
+        return db.execute('SELECT 1 FROM mission_stops WHERE mission=?',(identity,)).fetchone() is not None
+
+
+def cancel(runtime,identity,claimed,reason):
+    if not isinstance(reason,str) or not reason.strip() or len(reason)>2000: raise BastionError('cancellation requires a bounded operator reason')
+    # No execution lock: the operator must be able to signal a currently running worker.
+    with runtime.store.connect(write=True) as db:
+        row=db.execute('SELECT * FROM missions WHERE id=?',(identity,)).fetchone()
+        if not row or row['digest']!=claimed or digest(json.loads(row['plan']))!=claimed or json.loads(row['plan'])['workspace']!=str(runtime.store.workspace):
+            raise BastionError('mission cancellation digest mismatch')
+        if row['state'] in ('complete','cancelled'): raise BastionError('mission is already terminal')
+        if not db.execute('SELECT 1 FROM mission_stops WHERE mission=?',(identity,)).fetchone():
+            db.execute('INSERT INTO mission_stops VALUES(?,?,?,?)',(identity,claimed,reason,time.time()))
+            runtime.store.event(db,identity,'mission-cancel-requested',{'digest':claimed,'reason':reason})
+        db.execute("UPDATE missions SET state='cancel-requested' WHERE id=?",(identity,))
+    return {'mission':identity,'state':'cancel-requested','scope':'durable cooperative stop; in-flight external effects may remain unknown'}
+
+
+def acknowledge_cancel(runtime,identity):
+    with runtime.store.connect(write=True) as db:
+        db.execute("UPDATE missions SET state='cancelled',error='operator cancellation; reconcile any interrupted code' WHERE id=?",(identity,))
+        db.execute("UPDATE mission_jobs SET state='interrupted',error='cancelled; outcome may be unknown' WHERE mission=? AND state='running'",(identity,))
+        runtime.store.event(db,identity,'mission-cancelled',{'implicitRetry':False,'externalReconciliationProven':False})
+    return inspect(runtime,identity)
+
+
+def run_child(runtime, ref, deadline, output_budget, state_budget, mission_id=None):
     command = [sys.executable, "-m", "bastion.worker", str(runtime.store.workspace), ref["run"], ref["digest"],
                str(os.getpid()), str(max(0.001, deadline - time.monotonic())), str(state_budget),ref.get('kind','workflow')]
     process = subprocess.Popen(command, cwd=str(Path(__file__).resolve().parents[1]), stdout=subprocess.PIPE,
@@ -165,6 +197,7 @@ def run_child(runtime, ref, deadline, output_budget, state_budget):
     seen, error = 0, None
     try:
         while monitor.get_map():
+            if mission_id and stop_requested(runtime,mission_id): raise MissionCancelled("operator requested cancellation")
             if time.monotonic() >= deadline:
                 error = "mission wall-time budget exhausted"
                 break
@@ -202,6 +235,8 @@ def run_child(runtime, ref, deadline, output_budget, state_budget):
 def work(runtime, identity, claimed):
     with runtime.store.execution_lock("mission-" + identity):
         result = bound(runtime, identity, claimed)
+        if result['state']=='cancelled': return result
+        if stop_requested(runtime,identity): return acknowledge_cancel(runtime,identity)
         if result["approved"] != claimed or result["state"] not in ("approved", "running", "blocked", "complete"):
             raise BastionError("mission is not approved")
         if result["state"] == "complete":
@@ -218,6 +253,7 @@ def work(runtime, identity, claimed):
             db.execute("UPDATE missions SET state='running',started=?,error=NULL WHERE id=?", (started, identity))
         try:
             for ref in result["jobs"]:
+                if stop_requested(runtime,identity): raise MissionCancelled("operator requested cancellation")
                 if ref["state"] == "done":
                     if job_verify(runtime,ref)["receiptDigest"] != ref["receipt"]:
                         raise BastionError("mission receipt mismatch")
@@ -245,7 +281,7 @@ def work(runtime, identity, claimed):
                     db.execute("UPDATE mission_jobs SET state='running',attempts=attempts+1,error=NULL WHERE mission=? AND position=?",
                                (identity, ref["position"]))
                 remaining = wall_deadline - time.time()
-                used = run_child(runtime, ref, time.monotonic() + remaining, budgets["maxOutputBytes"], budgets["maxStateBytes"])
+                used = run_child(runtime, ref, time.monotonic() + remaining, budgets["maxOutputBytes"], budgets["maxStateBytes"],identity)
                 verified = job_verify(runtime,ref)
                 if storage(runtime.store) > budgets["maxStateBytes"]:
                     raise BastionError("mission state budget exhausted")
@@ -254,8 +290,11 @@ def work(runtime, identity, claimed):
                                (verified["receiptDigest"], used, identity, ref["position"]))
                     runtime.store.event(db, identity, "mission-job-verified", {"run": ref["run"], "receipt": verified["receiptDigest"]})
             with runtime.store.connect(write=True) as db:
+                if db.execute('SELECT 1 FROM mission_stops WHERE mission=?',(identity,)).fetchone(): raise MissionCancelled('operator requested cancellation')
                 db.execute("UPDATE missions SET state='complete' WHERE id=?", (identity,))
                 runtime.store.event(db, identity, "mission-complete", {"jobs": len(result["jobs"])})
+        except MissionCancelled:
+            return acknowledge_cancel(runtime,identity)
         except (BastionError, OSError, subprocess.TimeoutExpired) as exc:
             with runtime.store.connect(write=True) as db:
                 db.execute("UPDATE missions SET state='blocked',error=? WHERE id=?", (str(exc), identity))
@@ -268,10 +307,10 @@ def due(runtime, limit=10):
     if type(limit) is not int or not 1 <= limit <= 100:
         raise BastionError("invalid due mission limit")
     with runtime.store.connect() as db:
-        candidates = db.execute("SELECT id,digest,plan FROM missions WHERE state IN ('approved','running') ORDER BY id").fetchall()
+        candidates = db.execute("SELECT id,digest,plan,state FROM missions WHERE state IN ('approved','running','cancel-requested') ORDER BY id").fetchall()
     candidates = sorted(candidates, key=lambda r: (json.loads(r["plan"])["deadline"], r["id"]))
     return {"missions": [{"mission": r["id"], "digest": r["digest"]} for r in candidates
-                         if json.loads(r["plan"])["notBefore"] <= time.time()][:limit],
+                         if r["state"]=="cancel-requested" or json.loads(r["plan"])["notBefore"] <= time.time()][:limit],
             "dispatch": "local only; invoke mission work explicitly or through an operator-installed scheduler"}
 
 

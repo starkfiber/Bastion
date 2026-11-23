@@ -6,6 +6,9 @@ from .core import BastionError, CAPABILITIES, canonical
 
 STRING = {"type": "string"}
 TOOL_FIELDS = {
+    "bastion_progress": {"cursor":STRING},
+    "bastion_metrics": {},
+    "bastion_task_report": {"id": STRING},
     "bastion_check_plan": {"manifest": {"type": "object"}},
     "bastion_check_inspect": {"id": STRING},
     "bastion_check_verify": {"id": STRING},
@@ -30,8 +33,11 @@ TOOL_FIELDS = {
     "bastion_missions_due": {},
     "bastion_storage": {},
 }
-READONLY = {"bastion_capabilities", "bastion_inspect", "bastion_knowledge", "bastion_experiences", "bastion_skills", "bastion_skill", "bastion_cartridges", "bastion_cartridge", "bastion_mission_inspect", "bastion_missions_due", "bastion_storage"}
+READONLY = {"bastion_progress","bastion_metrics", "bastion_task_report","bastion_capabilities", "bastion_inspect", "bastion_knowledge", "bastion_experiences", "bastion_skills", "bastion_skill", "bastion_cartridges", "bastion_cartridge", "bastion_mission_inspect", "bastion_missions_due", "bastion_storage"}
 DESCRIPTIONS = {
+    "bastion_progress":"Read bounded project progress since a returned cursor; empty string starts at the beginning. No scheduling or approval.",
+    "bastion_metrics": "Read bounded receipt-backed usage metrics. No model telemetry or job launch.",
+    "bastion_task_report": "Verify one reviewed QA receipt and produce a structured report. Does not execute code or export files.",
     "bastion_check_plan": "Draft a source-pinned unittest job for explicitly reviewed trusted code. No execution or approval; OS isolation is unqualified.",
     "bastion_check_inspect": "Inspect one local code-check plan and its recorded outcome.",
     "bastion_check_verify": "Check retained test receipt, logs, source snapshot and journal identity. Integrity verification does not mean tests passed.",
@@ -81,6 +87,15 @@ def invoke(runtime, name, args):
         kind = str if schema["type"] == "string" else dict
         if not isinstance(args[field], kind):
             raise BastionError("invalid argument type")
+    if name=="bastion_progress":
+        from .progress import changes
+        return changes(runtime,args["cursor"] or None)
+    if name=="bastion_metrics":
+        from .metrics import summary
+        return summary(runtime)
+    if name=="bastion_task_report":
+        from .tasking import report
+        return report(runtime,args['id'])
     if name == "bastion_capabilities":
         return catalog()
     if name in ("bastion_check_plan", "bastion_check_inspect", "bastion_check_verify"):

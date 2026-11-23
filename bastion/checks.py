@@ -41,10 +41,14 @@ def plan(runtime, manifest):
     if any(Path(f).is_absolute() or ".." in Path(f).parts or f != Path(f).as_posix() or not f or f.startswith(".") for f in files):
         raise BastionError("check files must be normalized visible relative paths")
     modules = manifest["testModules"]
-    if not isinstance(modules, list) or not 1 <= len(modules) <= 20 or any(not isinstance(m, str) or not re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_]*", m) for m in modules):
-        raise BastionError("check requires explicit top-level test module names")
-    if len(set(modules)) != len(modules) or any(m + ".py" not in files for m in modules):
+    if not isinstance(modules, list) or not 1 <= len(modules) <= 20 or any(not isinstance(m, str) or not re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*", m) for m in modules):
+        raise BastionError("check requires explicit Python test module names")
+    if len(set(modules)) != len(modules) or any(m.replace(".", "/") + ".py" not in files for m in modules):
         raise BastionError("test modules must be unique and included in pinned files")
+    for module in modules:
+        parts = module.split(".")[:-1]
+        if any("/".join(parts[:i]) + "/__init__.py" not in files for i in range(1, len(parts)+1)):
+            raise BastionError("test packages require explicitly pinned __init__.py files")
     if type(manifest["minTests"]) is not int or not 1 <= manifest["minTests"] <= 1000:
         raise BastionError("check requires at least one expected test")
     limits = {"wallSeconds": (1, 120), "cpuSeconds": (1, 60), "outputBytes": (1024, 1048576), "stateBytes": (1048576, 1073741824)}
@@ -117,13 +121,20 @@ def artifact_root(store, identity):
 def run(runtime, identity, claimed):
     with runtime.store.execution_lock("check-" + identity):
         item = bound(runtime, identity, claimed, live=True)
-        if item["state"] in ("passed", "failed"): return verify(runtime, identity)
+        if item["state"] in ("passed", "failed"):
+            started = time.monotonic()
+            result = verify(runtime, identity)
+            with runtime.store.connect(write=True) as db:
+                runtime.store.event(db, identity, "check-reused", {"receiptDigest":result["receiptDigest"], "elapsedMs":round((time.monotonic()-started)*1000,3)})
+            return dict(result, reused=True)
         if item["approved"] != claimed or item["state"] != "approved":
             raise BastionError("check is unapproved or needs reconciliation; never retry code implicitly")
         plan_value, manifest = item["plan"], item["plan"]["manifest"]
         budgets = manifest["budgets"]
         source_bytes=sum(runtime.store.project_file(name).stat().st_size for name in plan_value['sources'])
         if storage(runtime.store) + source_bytes >= budgets["stateBytes"]: raise BastionError("check state budget exhausted")
+        started_at, started = time.time(), time.monotonic()
+        native_before = dict(runtime.native.stats) if runtime.native else None
         native_gate(runtime,'approved','start')
         root = artifact_root(runtime.store, identity)
         if root.exists(): raise BastionError("check artifact directory exists; inspect interrupted evidence")
@@ -183,6 +194,10 @@ def run(runtime, identity, claimed):
         receipt = {"schema": "bastion.check-receipt.v1", "check": identity, "planDigest": claimed,
             "passed": passed, "exitCode": process.returncode, "stopReason": stop_reason,
             "tests": result, "sourceUnchanged": unchanged, "outputBytes": seen,
+            "metrics": {"startedAtUnix":started_at, "finishedAtUnix":time.time(),
+                "executionMs":round((time.monotonic()-started)*1000,3),
+                "native":{k:round(runtime.native.stats[k]-native_before[k],3) for k in native_before} if runtime.native else None,
+                "scope":"snapshot, managed tests and native start/outcome gates; excludes approval and final receipt verification"},
             "outputSha256": hashlib.sha256((root/"output.log").read_bytes()).hexdigest(),
             "resultSha256": hashlib.sha256(result_path.read_bytes()).hexdigest() if result_path.exists() else None,
             "snapshotHashes": {name: hashlib.sha256((snapshot/name).read_bytes()).hexdigest() if (snapshot/name).is_file() and not (snapshot/name).is_symlink() else None for name in plan_value['sources']},
