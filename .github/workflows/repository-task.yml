@@ -1,0 +1,35 @@
+name: Reviewed repository QA task
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.9', '3.12']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Execute the reviewed bundled task
+        run: python tools/run_repository_task.py --run
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+      - name: Retain reports even when tests fail
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: bastion-qa-python-${{ matrix.python }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            dist/repository-task/report.html
+            dist/repository-task/report.md
+            dist/repository-task/report.json
+            dist/repository-task/metrics.json
+            dist/repository-task/timing.json
