@@ -1,0 +1,305 @@
+{
+  "version": "0.7.0",
+  "nativeRepositoryQA": {
+    "integrityVerified": true,
+    "metrics": {
+      "executionMs": 30656.265,
+      "finishedAtUnix": 1795457992.516425,
+      "native": {
+        "elapsedMs": 18.83,
+        "invocations": 2,
+        "outputBytes": 91
+      },
+      "scope": "snapshot, managed tests and native start/outcome gates; excludes approval and final receipt verification",
+      "startedAtUnix": 1795457961.860041
+    },
+    "name": "Bastion repository QA",
+    "nativeEngineSha256": "3bc928a1a4057b295a1416b9ff109f39e907887a29676b841e74ef666d67777e",
+    "outputBytes": 9131,
+    "passed": true,
+    "planDigest": "ddc3a23a24f3bad25bc892a3e2da9e1ac4c2b8e06b299eb6bd1888505a6a3404",
+    "receiptDigest": "de57c3bb66ab2fb33ba7c8350820da4238438484070c2f31e985ab077676dea8",
+    "schema": "bastion.task-report.v1",
+    "scope": "reviewed local Python QA; host permissions; no live planner, deployment or external-effect reconciliation",
+    "sourceFiles": 31,
+    "state": "passed",
+    "stopReason": null,
+    "task": "60c4d259ead143c7ad9cf9504a03336c",
+    "tests": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "skipped": 0,
+      "testsRun": 97
+    }
+  },
+  "nativeTiming": {
+    "schema": "bastion.task-timing.v1",
+    "firstRunCliMs": 30897.866,
+    "receiptReuseCliMs": 306.949,
+    "sampleCount": 1,
+    "scope": "single local observation per operation, includes CLI startup; not a throughput benchmark",
+    "task": "60c4d259ead143c7ad9cf9504a03336c",
+    "receiptDigest": "de57c3bb66ab2fb33ba7c8350820da4238438484070c2f31e985ab077676dea8",
+    "passed": true,
+    "nativeConfigured": true
+  },
+  "whatifVersion": "3.2.0",
+  "whatifPlanDigest": "b29ebdb37e149f27b41735a694939ba6d5fb70aa281d5b7f611be863514c9df8",
+  "whatifScenarios": {
+    "schema": "whatif.harness-result.v1",
+    "planDigest": "b29ebdb37e149f27b41735a694939ba6d5fb70aa281d5b7f611be863514c9df8",
+    "planned": 7,
+    "executed": 7,
+    "passed": 7,
+    "failed": 0,
+    "unknown": 0,
+    "outcomes": [
+      {
+        "scenario": "verified-reuse",
+        "status": "passed"
+      },
+      {
+        "scenario": "unapproved-refused",
+        "status": "passed"
+      },
+      {
+        "scenario": "wrong-digest-refused",
+        "status": "passed"
+      },
+      {
+        "scenario": "changed-input-refused",
+        "status": "passed"
+      },
+      {
+        "scenario": "foreign-cursor-refused",
+        "status": "passed"
+      },
+      {
+        "scenario": "report-tamper-refused",
+        "status": "passed"
+      },
+      {
+        "scenario": "pending-cancel",
+        "status": "passed"
+      }
+    ],
+    "commands": 25,
+    "outputBytes": 19316,
+    "trace": [
+      {
+        "evidence": 0,
+        "command": "plan workflow.json",
+        "exitCode": 0,
+        "stdoutSha256": "54bb271c063643673484b92e0b0fb4513127107eca07b91f648330432cf806be",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 1,
+        "command": "approve e60794fa1013407f8c84c5e7c9db2dd2",
+        "exitCode": 0,
+        "stdoutSha256": "f083d911ef1320945dc7c188f1f306ee0b159a02794e8b830f8a92841a08ed42",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 2,
+        "command": "run e60794fa1013407f8c84c5e7c9db2dd2",
+        "exitCode": 0,
+        "stdoutSha256": "7e119d514f155d95ef573b2f06bc057e9b135bfc62f41a88a13cb8c3b76202b3",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 3,
+        "command": "verify e60794fa1013407f8c84c5e7c9db2dd2",
+        "exitCode": 0,
+        "stdoutSha256": "ce9c234cb5002e4b2872f9de51652a660c09197f19fc844fa2291f56c13c83f9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 4,
+        "command": "progress",
+        "exitCode": 0,
+        "stdoutSha256": "cefd7fcee6947d899292fe0170c2275643609e6af24169335156f02a5d73258a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 5,
+        "command": "run e60794fa1013407f8c84c5e7c9db2dd2",
+        "exitCode": 0,
+        "stdoutSha256": "ce9c234cb5002e4b2872f9de51652a660c09197f19fc844fa2291f56c13c83f9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 6,
+        "command": "progress --cursor",
+        "exitCode": 0,
+        "stdoutSha256": "615f5bed94e5a6939624f99691f58e2382f5ab4c9e6051c430916df2273c4bef",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 7,
+        "command": "plan workflow.json",
+        "exitCode": 0,
+        "stdoutSha256": "702403e926774b165c4e0088186f255d92ad274815aeabe5527c4136e3c5e8ac",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 8,
+        "command": "run 8fe671dc50584b7687c7cefe07eed37a",
+        "exitCode": 1,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "bf5a761ab88ac18a2a78d1deeb0a4f0e785fd9f2994ac6f7a1b1361922486f52",
+        "error": null
+      },
+      {
+        "evidence": 9,
+        "command": "inspect 8fe671dc50584b7687c7cefe07eed37a",
+        "exitCode": 0,
+        "stdoutSha256": "cbabf6fc984cb8fef7a8eb2deda543b6b371d748f1fc094d2da3f020bb2e80a9",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 10,
+        "command": "plan workflow.json",
+        "exitCode": 0,
+        "stdoutSha256": "5d83dfb867fa4a99e92b8b39eef3ca4a90e9c77550f0e5910b8233bebffb02f6",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 11,
+        "command": "approve 73a70671905647809c273874ea99c194",
+        "exitCode": 1,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "b1d60d24a278413537fddbf849e62de0b8a70398937c3c9b729b1bd75ca5b11c",
+        "error": null
+      },
+      {
+        "evidence": 12,
+        "command": "plan workflow.json",
+        "exitCode": 0,
+        "stdoutSha256": "b61b6ec080931036ca497f37d1b326a8a042fe30664b1e1b2f83427f1a492ad5",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 13,
+        "command": "approve a2d7f70acdaf489fafdac52f08e7bd58",
+        "exitCode": 1,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "1a7a14b45c917eee265a9db61b9fa2bff2ecfd9a579b4732e45685e297d4ebbb",
+        "error": null
+      },
+      {
+        "evidence": 14,
+        "command": "progress",
+        "exitCode": 0,
+        "stdoutSha256": "965b38a319a47afea14c09936d6bc43d9445b27183cc0e07182953f1bde855ac",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 15,
+        "command": "progress --cursor",
+        "exitCode": 1,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "f0fee458e4a5c2de157c2fbab24ddb12cf311f4092f4427eb184d09450116040",
+        "error": null
+      },
+      {
+        "evidence": 16,
+        "command": "task plan",
+        "exitCode": 0,
+        "stdoutSha256": "4aab524509ccda73a2ef65f793f902b24af337510290af0de4890fcb7bc36de7",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 17,
+        "command": "task approve",
+        "exitCode": 0,
+        "stdoutSha256": "308b83b4644d1a30adb26da13518a33b96b336549088d8785b05105412bb48d5",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 18,
+        "command": "task run",
+        "exitCode": 0,
+        "stdoutSha256": "a0205be8c5cb5cd34c484f310d87223ca3c461e62d32baa951ebfb97a391d043",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 19,
+        "command": "task report",
+        "exitCode": 1,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "5cabd76b03f4fb8a8114224e83c134e8ede661cf9f738ebbcd5160e8773d8e5a",
+        "error": null
+      },
+      {
+        "evidence": 20,
+        "command": "plan workflow.json",
+        "exitCode": 0,
+        "stdoutSha256": "8df10f8ac3c95f2495cfb24c081d42759ea6113dc4a5d5b0b4f2219b51677533",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 21,
+        "command": "mission plan",
+        "exitCode": 0,
+        "stdoutSha256": "5cfe28f323982fcdecc35b6d35a892040bd46c9d04e150b05fa4902513cd2515",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 22,
+        "command": "mission cancel",
+        "exitCode": 0,
+        "stdoutSha256": "21e209fb585623715042d42dc781feb516570072ebca691bb1d088f97fb1c94f",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 23,
+        "command": "mission work",
+        "exitCode": 0,
+        "stdoutSha256": "5209d0c37b448bf773a32495d325f3ae13eeeca7a6d58beb7811a692c141d98b",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      },
+      {
+        "evidence": 24,
+        "command": "inspect b4435dcb209042538f276404a04e710c",
+        "exitCode": 0,
+        "stdoutSha256": "719373c853de2c5858c8ee70208827cee1d58dae11f62f10b149cf59962e979c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "error": null
+      }
+    ],
+    "scope": "real local CLI contracts on disposable fixtures; no hostile-code sandbox, live model, load or superiority claim"
+  },
+  "whatifVerification": {
+    "integrityVerified": true,
+    "oraclesRechecked": true,
+    "passed": true,
+    "covered": 7,
+    "planned": 7,
+    "scope": "retained protocol observations and local hashes; not a signed attestation; fixture journals are not independently reconstructed"
+  },
+  "limits": [
+    "97 local tests and seven owned CLI scenarios; no comparative OpenClaw benchmark.",
+    "No live model or hostile-code sandbox; native call counts cover execution gates only."
+  ]
+}
