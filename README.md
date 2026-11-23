@@ -8,9 +8,33 @@
 
 Bastion is a project-owned AI harness that carries knowledge, skills, plans and receipts across model sessions. Models propose work; the harness controls approved execution and retains what actually happened.
 
-**0.5.0 · Mixed Mission Edition · local candidate**
+**0.7.0 · Control Edition · source candidate**
 
-## Start in one minute
+This source includes the 0.6 task runner plus durable progress and cooperative mission cancellation. Installed plugin upgrades and hosted CI execution are separate operations.
+
+## Follow and stop work
+
+```sh
+python3 -m bastion --workspace PROJECT progress --limit 50
+python3 -m bastion --workspace PROJECT progress --cursor RETURNED_CURSOR
+python3 -m bastion --workspace PROJECT mission cancel MISSION_ID PLAN_DIGEST --reason "Stop this mission"
+```
+
+Progress is bounded and project-scoped. Cancellation is durable; interrupted code remains uncertain and downstream work stays unexecuted. [Control contract](docs/CONTROL.md) · [Claw design review](docs/CLAW-REVIEW.md) · [Measured qualification](docs/assets/control-qualification.json).
+
+## Run a real repository task
+
+The `python-unittest` recipe runs reviewed, source-pinned repository tests, records RF² execution gates when configured, and produces a failure-aware HTML/Markdown report. It supports package test modules, exact approvals, checked report export and receipt-backed usage metrics.
+
+```sh
+python3 tools/run_repository_task.py --run --workspace dist/my-reviewed-qa
+```
+
+Review [the bundled specification](demo/repository-qa.json) first. The flag approves only that included recipe. It never publishes, installs a scheduler or connects a model. A new workspace is required. The real RF²-backed qualification passed **97 tests**, generated both reports and reused its receipt. First native qualification caught two actual issues; failed evidence was retained and correction required a fresh task.
+
+[Task usage and metrics](docs/TASKS.md) · [Actual report example](docs/assets/task-report-example.html) · [Qualification data](docs/assets/task-edition-qualification.json)
+
+## Start with the small workflow demo
 
 Requires Python 3.9+ and a POSIX host. The standard-library workflow demo needs no provider account, API key or RF² binary. Native-backed qualification was performed on macOS ARM64; Linux remains unqualified until CI runs.
 
@@ -52,7 +76,8 @@ That flag approves only the bundled disposable demo. It is not permission to exe
 | Recovery | Reuse committed receipts; recover bounded workflows; never silently retry uncertain code |
 | RF² | Optional pinned native checked-sum and decision gates; Python retains host authority |
 | Storage controls | Observed state budgets and quota/TTL cleanup for explicitly rebuildable cache |
-| MCP | 23 model-facing planning, inspection and bounded workflow tools |
+| MCP | 26 tools, including read-only task reports and observed metrics |
+| Repository QA | Reviewed package tests, explicit acceptance count, failure exit status and report export |
 
 ![Exact workflow and failure path](docs/assets/workflow.svg)
 
@@ -62,7 +87,7 @@ That flag approves only the bundled disposable demo. It is not permission to exe
 
 This is a rendering of an actual synthetic CLI capture with workspace paths redacted. It is not a graphical application screenshot. [Read the walkthrough](docs/WALKTHROUGH.md) or inspect the [captured JSON](docs/assets/walkthrough.json).
 
-## Measured local speed
+## Historical 0.5 CLI microbenchmarks
 
 | Operation | Median of 15 local samples |
 |---|---:|
@@ -70,11 +95,11 @@ This is a rendering of an actual synthetic CLI capture with workspace paths reda
 | Reuse verified receipt | 50.42 ms |
 | Brain query, no knowledge match | 48.38 ms |
 
-Measured on macOS ARM64, Python 3.9.6. These include CLI process startup and local journal work on tiny fixtures; no native engine or model was configured for this timing run. They do not establish AI inference speed, throughput, production capacity or an advantage over another harness. [Method, ranges and raw samples](docs/PERFORMANCE.md).
+The following small-fixture samples were captured for 0.5.0, before Task Edition. They do not measure the 0.6 repository task. Measured on macOS ARM64, Python 3.9.6. These include CLI process startup and local journal work on tiny fixtures; no native engine or model was configured for this timing run. They do not establish AI inference speed, throughput, production capacity or an advantage over another harness. [Method, ranges and raw samples](docs/PERFORMANCE.md).
 
 ## Proof and limits
 
-- The retained local 0.5 suite passed **82 tests**, including process loss, recovery, tampering, typed mission checks and concurrent migration.
+- The current local suite and corrected RF²-backed QA task passed **97 tests**, including process loss, recovery, tampering, typed mission checks and concurrent migration.
 - A native-backed mixed pipeline passed, blocked a deliberately regressed kernel, refused implicit retry, and required fresh approval for correction.
 - A separate WhatIF fixture returned expected statuses for 12 loopback probes; this established neither capacity nor security.
 
@@ -84,6 +109,8 @@ The long-term goal is reliable bounded overnight work. Arbitrary MVP-by-morning 
 
 ## Documentation
 
+- [Progress and cancellation](docs/CONTROL.md)
+- [Repository tasks and metrics](docs/TASKS.md)
 - [Browser overview](docs/index.html) · [Validation scope](docs/VALIDATION.md)
 - [Quick start and installation](docs/QUICKSTART.md)
 - [Guided walkthrough](docs/WALKTHROUGH.md)
@@ -91,7 +118,7 @@ The long-term goal is reliable bounded overnight work. Arbitrary MVP-by-morning 
 - [CLI, capabilities and MCP functions](docs/FUNCTIONS.md)
 - [Measured speed](docs/PERFORMANCE.md)
 - [Operator guide](docs/OPERATOR_GUIDE.md)
-- [Architecture](architecture.md) · [0.5 release notes](RELEASE-0.5.0.md)
+- [Architecture](architecture.md) · [0.7 release notes](RELEASE-0.7.0.md)
 - [Contributing](CONTRIBUTING.md) · [Security boundaries](SECURITY.md)
 
 ## Local page preview
