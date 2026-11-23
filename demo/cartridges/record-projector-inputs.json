@@ -1,0 +1,9 @@
+{
+  "value": {
+    "name": "Sample",
+    "extra": "omit"
+  },
+  "fields": [
+    "name"
+  ]
+}

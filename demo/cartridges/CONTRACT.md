@@ -1,0 +1,1 @@
+Bastion original local cartridges v1. Only declared pure built-ins execute. Plans always require separate approval. Fixture results establish bounded examples, not general task intelligence. Assets are data and never executed.

@@ -1,0 +1,73 @@
+{
+  "schema": "bastion.cartridge.v1",
+  "name": "canonical-fingerprint",
+  "version": "1.0.0",
+  "description": "Fingerprint canonical JSON with a retained bounded workflow",
+  "inputs": {
+    "value": "json"
+  },
+  "capabilities": [
+    "data.sha256"
+  ],
+  "workflow": {
+    "schema": "bastion.workflow.v1",
+    "title": "Fingerprint canonical JSON",
+    "nodes": [
+      {
+        "id": "fingerprint",
+        "capability": "data.sha256",
+        "params": {
+          "value": {
+            "$input": "value"
+          }
+        }
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "inputs": {
+        "value": {
+          "b": 2,
+          "a": 1
+        }
+      },
+      "expected": {
+        "outputs": {
+          "fingerprint": "43258cff783fe7036d8a43033f830adfc60ec037382473548ac742b888292777"
+        }
+      }
+    },
+    {
+      "inputs": {
+        "value": ""
+      },
+      "expected": {
+        "outputs": {
+          "fingerprint": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126"
+        }
+      }
+    },
+    {
+      "inputs": {},
+      "expected": {
+        "error": "cartridge input fields mismatch"
+      }
+    },
+    {
+      "inputs": {
+        "unknown": 0
+      },
+      "expected": {
+        "error": "cartridge input fields mismatch"
+      }
+    }
+  ],
+  "assets": [
+    "cartridges/CONTRACT.md"
+  ],
+  "budgets": {
+    "maxNodes": 1,
+    "maxOutputBytes": 1024
+  }
+}

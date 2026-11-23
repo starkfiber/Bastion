@@ -1,0 +1,90 @@
+{
+  "schema": "bastion.cartridge.v1",
+  "name": "checked-sum",
+  "version": "1.0.0",
+  "description": "Sum bounded unsigned integers with exact fixture oracles",
+  "inputs": {
+    "values": "u32-list"
+  },
+  "capabilities": [
+    "math.sum_u32"
+  ],
+  "workflow": {
+    "schema": "bastion.workflow.v1",
+    "title": "Checked sum",
+    "nodes": [
+      {
+        "id": "sum",
+        "capability": "math.sum_u32",
+        "params": {
+          "values": {
+            "$input": "values"
+          }
+        }
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "inputs": {
+        "values": []
+      },
+      "expected": {
+        "outputs": {
+          "sum": 0
+        }
+      }
+    },
+    {
+      "inputs": {
+        "values": [
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "outputs": {
+          "sum": 5
+        }
+      }
+    },
+    {
+      "inputs": {
+        "values": [
+          true
+        ]
+      },
+      "expected": {
+        "error": "expected at most 64 u32 integers"
+      }
+    },
+    {
+      "inputs": {
+        "values": [
+          -1
+        ]
+      },
+      "expected": {
+        "error": "expected at most 64 u32 integers"
+      }
+    },
+    {
+      "inputs": {
+        "values": [
+          4294967295,
+          1
+        ]
+      },
+      "expected": {
+        "error": "u32 overflow"
+      }
+    }
+  ],
+  "assets": [
+    "cartridges/CONTRACT.md"
+  ],
+  "budgets": {
+    "maxNodes": 1,
+    "maxOutputBytes": 1024
+  }
+}

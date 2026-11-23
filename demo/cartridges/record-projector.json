@@ -1,0 +1,116 @@
+{
+  "schema": "bastion.cartridge.v1",
+  "name": "record-projector",
+  "version": "1.0.0",
+  "description": "Select required record fields and reject missing or ambiguous field declarations",
+  "inputs": {
+    "value": "json",
+    "fields": "json"
+  },
+  "capabilities": [
+    "data.select_fields"
+  ],
+  "workflow": {
+    "schema": "bastion.workflow.v1",
+    "title": "Select exact record fields",
+    "nodes": [
+      {
+        "id": "selected",
+        "capability": "data.select_fields",
+        "params": {
+          "value": {
+            "$input": "value"
+          },
+          "fields": {
+            "$input": "fields"
+          }
+        }
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "inputs": {
+        "value": {
+          "name": "Sample",
+          "extra": "omit"
+        },
+        "fields": [
+          "name"
+        ]
+      },
+      "expected": {
+        "outputs": {
+          "selected": {
+            "name": "Sample"
+          }
+        }
+      }
+    },
+    {
+      "inputs": {
+        "value": {
+          "a": 1,
+          "b": 2
+        },
+        "fields": [
+          "b",
+          "a"
+        ]
+      },
+      "expected": {
+        "outputs": {
+          "selected": {
+            "a": 1,
+            "b": 2
+          }
+        }
+      }
+    },
+    {
+      "inputs": {
+        "value": {
+          "a": 1
+        },
+        "fields": [
+          "missing"
+        ]
+      },
+      "expected": {
+        "error": "required field missing"
+      }
+    },
+    {
+      "inputs": {
+        "value": {
+          "a": 1
+        },
+        "fields": [
+          "a",
+          "a"
+        ]
+      },
+      "expected": {
+        "error": "expected unique bounded field names"
+      }
+    },
+    {
+      "inputs": {
+        "value": [],
+        "fields": [
+          "a"
+        ]
+      },
+      "expected": {
+        "error": "expected object and 1..32 field names"
+      }
+    }
+  ],
+  "assets": [
+    "cartridges/CONTRACT.md"
+  ],
+  "budgets": {
+    "maxNodes": 1,
+    "maxOutputBytes": 8192
+  }
+}
