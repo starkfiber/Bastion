@@ -23,7 +23,7 @@ python3 -m bastion --workspace demo map RUN
 python3 -m bastion --workspace demo knowledge model
 ```
 
-`bin/bastion` provides the same commands directly from this checkout. State stays in the selected workspace's private `.bastion/` directory. Keep workspaces separate across projects.
+`python3 bin/bastion` provides the same commands directly from this checkout. State stays in the selected workspace's private `.bastion/` directory. Keep workspaces separate across projects.
 
 The demo imports its brief, recalls project knowledge, calculates a bounded sum through a dependency graph, asserts the answer and fingerprints the recalled evidence. It does not call a model or external service.
 
