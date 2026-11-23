@@ -44,7 +44,7 @@ The native engine supplies bounded decisions and checked sums. It does not add m
 Launch the stdio server with:
 
 ```sh
-/absolute/path/to/bastion/bin/bastion --workspace /absolute/path/to/project mcp
+python3 /absolute/path/to/bastion/bin/bastion --workspace /absolute/path/to/project mcp
 ```
 
 Configure that command in your host's supported MCP settings after reviewing the code and project scope. This guide does not write host settings. Approval, code execution, mission workers, native configuration and cache deletion remain operator-only actions.
