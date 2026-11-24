@@ -2,7 +2,7 @@
   "version": "0.7.0",
   "stage": "local candidate; publication is a separate action",
   "files": {
-    ".github/workflows/ci.yml": "514a524619334ae789ef2c18d841bcc0f7220c86017ac3ebf6a5d5d92ac60098",
+    ".github/workflows/ci.yml": "d168e13b7927966e221f17e279ee018eee89e981b3251e4a50907ddf0910d57b",
     ".github/workflows/repository-task.yml": "e2a864acd86e26c79c91f6042f611c8940fdc5a66cf9c091b1fe033f910dda51",
     ".gitignore": "e2e96d0cf8e7c7b30c7e851c180a4a8bcc3e940c91fd1a518da8d83b9cb0f0c9",
     "ACCEPTANCE.md": "d2723bd7e0cdceb5bb159efa388f1519e522b0bf07d51c9f06d63edf7dfeea96",
