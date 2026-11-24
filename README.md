@@ -30,7 +30,7 @@ The `python-unittest` recipe runs reviewed, source-pinned repository tests, reco
 python3 tools/run_repository_task.py --run --workspace dist/my-reviewed-qa
 ```
 
-Review [the bundled specification](demo/repository-qa.json) first. The flag approves only that included recipe. It never publishes, installs a scheduler or connects a model. A new workspace is required. The real RF²-backed qualification passed **97 tests**, generated both reports and reused its receipt. First native qualification caught two actual issues; failed evidence was retained and correction required a fresh task.
+Review [the bundled specification](demo/repository-qa.json) first. The flag approves only that included recipe. It never publishes, installs a scheduler or connects a model. A new workspace is required. The retained RF²-backed qualification predating this fixture patch passed **97 tests**, generated both reports and reused its receipt. First native qualification caught two actual issues; failed evidence was retained and correction required a fresh task. The updated 107-case recipe includes the new fixture controls; its full-suite result is recorded separately below, not presented as a rerun of that historical task measurement.
 
 [Task usage and metrics](docs/TASKS.md) · [Actual report example](docs/assets/task-report-example.html) · [Qualification data](docs/assets/task-edition-qualification.json)
 
@@ -99,7 +99,7 @@ The following small-fixture samples were captured for 0.5.0, before Task Edition
 
 ## Proof and limits
 
-- The current local suite and corrected RF²-backed QA task passed **97 tests**, including process loss, recovery, tampering, typed mission checks and concurrent migration.
+- The native-fixture review's full local suite passed **107 tests with zero skips**, including all three native cases and ten new fixture-discovery controls. The original 97 assertions remain; the retained earlier RF²-backed QA task passed its historical 97-case recipe.
 - A native-backed mixed pipeline passed, blocked a deliberately regressed kernel, refused implicit retry, and required fresh approval for correction.
 - A separate WhatIF fixture returned expected statuses for 12 loopback probes; this established neither capacity nor security.
 
@@ -135,4 +135,4 @@ Open http://127.0.0.1:8000 . This serves the prepared overview locally; it does 
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
 ```
 
-Native-engine checks are conditional on a separately installed local RF² executable. Prepared GitHub Actions configuration is not a claim that hosted CI has run. Licensed under [MIT](LICENSE); see [NOTICE](NOTICE.md) for bundled-material boundaries.
+Native-engine checks use an explicitly configured executable and expected SHA-256; see [native test setup](docs/NATIVE-TESTS.md). With neither setting they explicitly skip; an explicitly missing or incorrect dependency fails discovery. The review adds ten fixture controls to the original 97-case suite. Prepared GitHub Actions configuration is not a claim that hosted CI has run. Licensed under [MIT](LICENSE); see [NOTICE](NOTICE.md) for bundled-material boundaries.

@@ -7,3 +7,7 @@ The seven WhatIF 3.2 harness scenarios now exercise actual CLI contracts on owne
 This release incorporates the previously local 0.6 Task Edition: reviewed repository QA, static reports, observed native/usage metrics, bounded native response capture and serialized SQLite initialization. See [0.6 changes](RELEASE-0.6.0.md), [control usage](docs/CONTROL.md) and [Claw review](docs/CLAW-REVIEW.md).
 
 Live model planning, general-purpose code generation, installed scheduling, hostile-code OS isolation and cross-chat dispatch remain open. No comparison establishes that Bastion is more powerful than another harness. Source publication is separate from upgrading the installed plugin or executing hosted CI.
+
+## Native-fixture review patch
+
+An isolated review replaces the obsolete version-specific native test path with an explicit executable plus expected SHA-256 configuration. An absent optional dependency remains an identified skip; explicitly incorrect configuration fails instead. Ten new discovery/refusal controls supplement the original 97 tests without weakening the three native cases. The repository QA allowlist and expected count include these controls. See [native test setup](docs/NATIVE-TESTS.md); this patch does not install or publish the candidate.
