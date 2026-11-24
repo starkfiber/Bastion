@@ -17,8 +17,10 @@ from bastion.mcp import invoke, listing
 from bastion.native import NativeEngine, configure
 from bastion.runtime import Runtime
 from bastion.store import Store
+from tests.native_fixture import resolve_native_fixture
 
-ENGINE = (Path.home() / '.codex/plugins/cache/rf2-harness-local/local-ai-harness/0.3.0/bin/rf2-harness')
+NATIVE_FIXTURE = resolve_native_fixture()
+ENGINE = NATIVE_FIXTURE.path if NATIVE_FIXTURE else None
 
 
 class MissionTests(unittest.TestCase):
@@ -181,14 +183,14 @@ class CacheTests(unittest.TestCase):
             cache.prune_plan(self.store)
 
 
-@unittest.skipUnless(ENGINE.is_file(), "installed native RF2 engine unavailable")
+@unittest.skipUnless(NATIVE_FIXTURE is not None, "optional native fixture not configured; supply explicit executable and SHA-256")
 class NativeTests(unittest.TestCase):
     setUp = MissionTests.setUp
     workflow = MissionTests.workflow
     spec = MissionTests.spec
     approved = MissionTests.approved
     def native(self):
-        sha = hashlib.sha256(ENGINE.read_bytes()).hexdigest()
+        sha = NATIVE_FIXTURE.sha256
         configure(self.store, str(ENGINE), sha)
         self.runtime = Runtime(self.store)
         return self.runtime.native
