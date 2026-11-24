@@ -40,6 +40,8 @@ python3 tools/run_repository_task.py --run --workspace dist/my-reviewed-qa
 
 For native start/outcome gates, additionally supply a separately reviewed executable and its SHA-256 using `--native-engine ABSOLUTE_PATH --native-sha256 SHA256`. The binary is not bundled. The task's native metric counts the two execution gates; configuration and approval occur outside that metric, and child tests may perform their own native calls.
 
+The recipe now allowlists 107 cases: the original 97 and ten native-fixture discovery controls. To execute the three optional native cases inside the repository task, also set `BASTION_TEST_NATIVE_ENGINE` and `BASTION_TEST_NATIVE_SHA256` as described in [native test setup](NATIVE-TESTS.md). The task's own native gates and its child tests are separate configuration scopes; configuring one does not implicitly configure the other.
+
 ## Read the metrics accurately
 
 State counts cover the project journal. Receipt outcomes, observed tests and latency statistics cover only the newest requested sample, at most 100 receipts; each is reverified before it is counted. Receipt reuse and report export counts come from durable events. Missing legacy timing is unknown, not zero. Native durations include process startup. No token spend, inference speed, throughput, OS isolation or concurrent-chat capacity is measured. Event-chain verification still scales linearly with retained history.
