@@ -24,6 +24,8 @@
     "bastion/tasking.py",
     "bastion/worker.py",
     "tests/__init__.py",
+    "tests/native_fixture.py",
+    "tests/test_native_fixture.py",
     "tests/test_brain.py",
     "tests/test_cartridges.py",
     "tests/test_checks.py",
@@ -40,12 +42,13 @@
     "tests.test_checks",
     "tests.test_handoff",
     "tests.test_missions",
+    "tests.test_native_fixture",
     "tests.test_mixed_missions",
     "tests.test_progress_control",
     "tests.test_system",
     "tests.test_tasking"
   ],
-  "minTests": 97,
+  "minTests": 107,
   "trust": "reviewed-local-code; not-os-sandboxed",
   "budgets": {
     "wallSeconds": 90,
