@@ -1,3 +1,5 @@
+> This detailed guide describes the 0.5 contracts inherited by the local 0.6 candidate. For repository tasks, package test modules, report export and observed metrics, use [Task Edition](TASKS.md).
+
 # BASTION Mixed Mission Edition — local 0.5.0 candidate
 
 A working local prototype for the BASTION vision: models propose work; a persistent harness retains the graph, approved capabilities, project knowledge, skill identities, receipts and reviewed lessons.

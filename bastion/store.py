@@ -41,51 +41,73 @@ class Store:
                 raise BastionError("database must be a private regular file")
         finally:
             os.close(descriptor)
-        with self.connect() as db:
-            db.executescript('''
-            CREATE TABLE IF NOT EXISTS runs(id TEXT PRIMARY KEY, plan TEXT NOT NULL,
-              digest TEXT NOT NULL, state TEXT NOT NULL, approved TEXT, receipt TEXT, error TEXT);
-            CREATE TABLE IF NOT EXISTS tasks(run TEXT NOT NULL, node TEXT NOT NULL,
-              state TEXT NOT NULL, params TEXT, result TEXT, result_digest TEXT,
-              PRIMARY KEY(run,node));
-            CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY, run TEXT NOT NULL,
-              kind TEXT NOT NULL, payload TEXT NOT NULL, previous TEXT NOT NULL, digest TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS knowledge(id TEXT PRIMARY KEY, source TEXT NOT NULL,
-              content TEXT NOT NULL, sha256 TEXT NOT NULL, provenance TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS skills(name TEXT PRIMARY KEY, path TEXT NOT NULL,
-              sha256 TEXT NOT NULL, description TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS experiences(id TEXT PRIMARY KEY, kind TEXT NOT NULL,
-              summary TEXT NOT NULL, evidence TEXT NOT NULL, quality TEXT NOT NULL,
-              created REAL NOT NULL);
-            CREATE TABLE IF NOT EXISTS lessons(id TEXT PRIMARY KEY, text TEXT NOT NULL,
-              source TEXT NOT NULL, state TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS handoffs(id TEXT PRIMARY KEY, package TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS handoff_proposals(run TEXT PRIMARY KEY, handoff TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS cartridges(id TEXT PRIMARY KEY, name TEXT NOT NULL,
-              version TEXT NOT NULL, package TEXT NOT NULL, UNIQUE(name,version));
-            CREATE TABLE IF NOT EXISTS cartridge_qualifications(id TEXT PRIMARY KEY, cartridge TEXT NOT NULL, report TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS cartridge_active(name TEXT PRIMARY KEY, cartridge TEXT NOT NULL, qualification TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS checks(id TEXT PRIMARY KEY, plan TEXT NOT NULL, digest TEXT NOT NULL,
-              state TEXT NOT NULL, approved TEXT, receipt TEXT, receipt_digest TEXT, error TEXT);
-            CREATE TABLE IF NOT EXISTS cache_entries(id TEXT PRIMARY KEY, size INTEGER NOT NULL, expires REAL NOT NULL);
-            CREATE TABLE IF NOT EXISTS missions(id TEXT PRIMARY KEY, plan TEXT NOT NULL, digest TEXT NOT NULL,
-              state TEXT NOT NULL, approved TEXT, started REAL, error TEXT);
-            CREATE TABLE IF NOT EXISTS mission_jobs(mission TEXT NOT NULL, position INTEGER NOT NULL,
-              run TEXT NOT NULL, digest TEXT NOT NULL, state TEXT NOT NULL, attempts INTEGER NOT NULL,
-              receipt TEXT, output_bytes INTEGER, error TEXT, PRIMARY KEY(mission,position));
-            ''')
-            db.execute('BEGIN IMMEDIATE')
-            columns={row['name'] for row in db.execute('PRAGMA table_info(mission_jobs)')}
-            if 'kind' not in columns:
-                db.execute("ALTER TABLE mission_jobs ADD COLUMN kind TEXT NOT NULL DEFAULT 'workflow'")
+        with self.initialization_lock():
+            with self.connect() as db:
+                db.execute("PRAGMA journal_mode=WAL")
+                db.executescript('''
+                CREATE TABLE IF NOT EXISTS runs(id TEXT PRIMARY KEY, plan TEXT NOT NULL,
+                  digest TEXT NOT NULL, state TEXT NOT NULL, approved TEXT, receipt TEXT, error TEXT);
+                CREATE TABLE IF NOT EXISTS tasks(run TEXT NOT NULL, node TEXT NOT NULL,
+                  state TEXT NOT NULL, params TEXT, result TEXT, result_digest TEXT,
+                  PRIMARY KEY(run,node));
+                CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY, run TEXT NOT NULL,
+                  kind TEXT NOT NULL, payload TEXT NOT NULL, previous TEXT NOT NULL, digest TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS knowledge(id TEXT PRIMARY KEY, source TEXT NOT NULL,
+                  content TEXT NOT NULL, sha256 TEXT NOT NULL, provenance TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS skills(name TEXT PRIMARY KEY, path TEXT NOT NULL,
+                  sha256 TEXT NOT NULL, description TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS experiences(id TEXT PRIMARY KEY, kind TEXT NOT NULL,
+                  summary TEXT NOT NULL, evidence TEXT NOT NULL, quality TEXT NOT NULL,
+                  created REAL NOT NULL);
+                CREATE TABLE IF NOT EXISTS lessons(id TEXT PRIMARY KEY, text TEXT NOT NULL,
+                  source TEXT NOT NULL, state TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS handoffs(id TEXT PRIMARY KEY, package TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS handoff_proposals(run TEXT PRIMARY KEY, handoff TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS cartridges(id TEXT PRIMARY KEY, name TEXT NOT NULL,
+                  version TEXT NOT NULL, package TEXT NOT NULL, UNIQUE(name,version));
+                CREATE TABLE IF NOT EXISTS cartridge_qualifications(id TEXT PRIMARY KEY, cartridge TEXT NOT NULL, report TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS cartridge_active(name TEXT PRIMARY KEY, cartridge TEXT NOT NULL, qualification TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS checks(id TEXT PRIMARY KEY, plan TEXT NOT NULL, digest TEXT NOT NULL,
+                  state TEXT NOT NULL, approved TEXT, receipt TEXT, receipt_digest TEXT, error TEXT);
+                CREATE TABLE IF NOT EXISTS cache_entries(id TEXT PRIMARY KEY, size INTEGER NOT NULL, expires REAL NOT NULL);
+                CREATE TABLE IF NOT EXISTS missions(id TEXT PRIMARY KEY, plan TEXT NOT NULL, digest TEXT NOT NULL,
+                  state TEXT NOT NULL, approved TEXT, started REAL, error TEXT);
+                CREATE TABLE IF NOT EXISTS mission_jobs(mission TEXT NOT NULL, position INTEGER NOT NULL,
+                  run TEXT NOT NULL, digest TEXT NOT NULL, state TEXT NOT NULL, attempts INTEGER NOT NULL,
+                  receipt TEXT, output_bytes INTEGER, error TEXT, PRIMARY KEY(mission,position));
+                ''')
+                db.execute('BEGIN IMMEDIATE')
+                db.execute("INSERT OR IGNORE INTO settings VALUES('journal-id',?)",(canonical(uuid.uuid4().hex),))
+                db.execute("CREATE TABLE IF NOT EXISTS mission_stops(mission TEXT PRIMARY KEY,digest TEXT NOT NULL,reason TEXT NOT NULL,requested REAL NOT NULL)")
+                columns={row['name'] for row in db.execute('PRAGMA table_info(mission_jobs)')}
+                if 'kind' not in columns:
+                    db.execute("ALTER TABLE mission_jobs ADD COLUMN kind TEXT NOT NULL DEFAULT 'workflow'")
+    @contextlib.contextmanager
+    def initialization_lock(self):
+        # SQLite journal-mode changes need serialization before schema migration.
+        path=self.root/"schema.lock"
+        fd=os.open(str(path),os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600)
+        try:
+            info=os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode) or info.st_nlink!=1 or info.st_uid!=os.getuid() or info.st_mode&0o077:
+                raise BastionError("schema lock must be private and regular")
+            deadline=time.monotonic()+5
+            while True:
+                try:
+                    fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    if time.monotonic()>=deadline: raise BastionError("schema initialization busy")
+                    time.sleep(0.01)
+            yield
+        finally: os.close(fd)
 
     @contextlib.contextmanager
     def connect(self, write=False):
         db = sqlite3.connect(str(self.path), timeout=5)
         db.row_factory = sqlite3.Row
         try:
-            db.execute("PRAGMA journal_mode=WAL")
             db.execute("PRAGMA synchronous=FULL")
             db.execute("PRAGMA fullfsync=ON")
             if write:

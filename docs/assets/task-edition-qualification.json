@@ -1,0 +1,352 @@
+{
+  "initialPython": {
+    "report": {
+      "integrityVerified": true,
+      "metrics": {
+        "executionMs": 16789.597,
+        "finishedAtUnix": 1795453531.157278,
+        "native": null,
+        "scope": "snapshot, managed tests and native start/outcome gates; excludes approval and final receipt verification",
+        "startedAtUnix": 1795453514.367564
+      },
+      "name": "Bastion repository QA",
+      "nativeEngineSha256": null,
+      "outputBytes": 8621,
+      "passed": true,
+      "planDigest": "69a481f77a0381036c5aaf02aff3768a34e7c7ed97ca969aeb418b2d3320cfc3",
+      "receiptDigest": "888a678bb0cea9886cf8272e4c5e28a57a4f5cd6ab4275bba7cbbadb37e5a46b",
+      "schema": "bastion.task-report.v1",
+      "scope": "reviewed local Python QA; host permissions; no live planner, deployment or external-effect reconciliation",
+      "sourceFiles": 29,
+      "state": "passed",
+      "stopReason": null,
+      "task": "3da18c9659164fd7b071a039478eb361",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "skipped": 0,
+        "testsRun": 92
+      }
+    },
+    "timing": {
+      "schema": "bastion.task-timing.v1",
+      "firstRunCliMs": 16914.123,
+      "receiptReuseCliMs": 794.724,
+      "sampleCount": 1,
+      "scope": "single local observation per operation, includes CLI startup; not a throughput benchmark",
+      "task": "3da18c9659164fd7b071a039478eb361",
+      "receiptDigest": "888a678bb0cea9886cf8272e4c5e28a57a4f5cd6ab4275bba7cbbadb37e5a46b",
+      "passed": true,
+      "nativeConfigured": false
+    },
+    "metrics": {
+      "eventAudit": {
+        "events": 7,
+        "head": "49ef6859d2355e12a2ffced06d8d086304d119c4bc22b85a66d37eae1748ea69",
+        "scope": "local-integrity"
+      },
+      "limits": [
+        "No model tokens, spend, inference speed or concurrent-chat capacity is measured.",
+        "Native timings include process startup; calls exclude configure/approval and external child activity.",
+        "Legacy missing timings are unknown, never zero. No background collection or deletion.",
+        "Full event-chain verification is linear in retained history; receipt verification is limited by the requested sample."
+      ],
+      "receiptReuseEvents": 1,
+      "reportExportEvents": 2,
+      "sample": {
+        "executionMs": {
+          "max": 16789.597,
+          "median": 16789.597,
+          "min": 16789.597
+        },
+        "failed": 0,
+        "limit": 100,
+        "measuredExecutions": 1,
+        "nativeElapsedMs": 0,
+        "nativeExecutions": 0,
+        "nativeInvocations": 0,
+        "observedTests": 92,
+        "passed": 1,
+        "unmeasuredLegacyReceipts": 0,
+        "verifiedReceipts": 1
+      },
+      "schema": "bastion.metrics.v1",
+      "scope": "state counts are journal totals; receipt statistics cover newest bounded sample; reuse/export counts are durable events",
+      "stateCounts": {
+        "checks": {
+          "passed": 1
+        },
+        "missions": {},
+        "runs": {}
+      }
+    }
+  },
+  "initialNativeFailure": {
+    "report": {
+      "integrityVerified": true,
+      "metrics": {
+        "executionMs": 32095.589,
+        "finishedAtUnix": 1795453560.324964,
+        "native": {
+          "elapsedMs": 20.453,
+          "invocations": 2,
+          "outputBytes": 89
+        },
+        "scope": "snapshot, managed tests and native start/outcome gates; excludes approval and final receipt verification",
+        "startedAtUnix": 1795453528.229146
+      },
+      "name": "Bastion repository QA",
+      "nativeEngineSha256": "3bc928a1a4057b295a1416b9ff109f39e907887a29676b841e74ef666d67777e",
+      "outputBytes": 12343,
+      "passed": false,
+      "planDigest": "39941f1695ff609c546cc7a6e613c4ac65119d601b3fcdc12f5b87f46b19725b",
+      "receiptDigest": "4ef902b9bf1e2659eec7ce5251991723472d45376b1e3d40ec8a25da6e1b1934",
+      "schema": "bastion.task-report.v1",
+      "scope": "reviewed local Python QA; host permissions; no live planner, deployment or external-effect reconciliation",
+      "sourceFiles": 29,
+      "state": "failed",
+      "stopReason": null,
+      "task": "73146a50754a43eb841247512053e32a",
+      "tests": {
+        "errors": 2,
+        "failures": 0,
+        "passed": false,
+        "skipped": 0,
+        "testsRun": 92
+      }
+    },
+    "timing": {
+      "schema": "bastion.task-timing.v1",
+      "firstRunCliMs": 32295.393,
+      "receiptReuseCliMs": 241.534,
+      "sampleCount": 1,
+      "scope": "single local observation per operation, includes CLI startup; not a throughput benchmark",
+      "task": "73146a50754a43eb841247512053e32a",
+      "receiptDigest": "4ef902b9bf1e2659eec7ce5251991723472d45376b1e3d40ec8a25da6e1b1934",
+      "passed": false,
+      "nativeConfigured": true
+    },
+    "metrics": {
+      "eventAudit": {
+        "events": 8,
+        "head": "4e781b2cf491b3173a40b50dbe05ab0a6dea5b55dfa64eaa19ddeb0262ee8b09",
+        "scope": "local-integrity"
+      },
+      "limits": [
+        "No model tokens, spend, inference speed or concurrent-chat capacity is measured.",
+        "Native timings include process startup; calls exclude configure/approval and external child activity.",
+        "Legacy missing timings are unknown, never zero. No background collection or deletion.",
+        "Full event-chain verification is linear in retained history; receipt verification is limited by the requested sample."
+      ],
+      "receiptReuseEvents": 1,
+      "reportExportEvents": 2,
+      "sample": {
+        "executionMs": {
+          "max": 32095.589,
+          "median": 32095.589,
+          "min": 32095.589
+        },
+        "failed": 1,
+        "limit": 100,
+        "measuredExecutions": 1,
+        "nativeElapsedMs": 20.453,
+        "nativeExecutions": 1,
+        "nativeInvocations": 2,
+        "observedTests": 92,
+        "passed": 0,
+        "unmeasuredLegacyReceipts": 0,
+        "verifiedReceipts": 1
+      },
+      "schema": "bastion.metrics.v1",
+      "scope": "state counts are journal totals; receipt statistics cover newest bounded sample; reuse/export counts are durable events",
+      "stateCounts": {
+        "checks": {
+          "failed": 1
+        },
+        "missions": {},
+        "runs": {}
+      }
+    }
+  },
+  "correctedNative": {
+    "report": {
+      "integrityVerified": true,
+      "metrics": {
+        "executionMs": 18316.472,
+        "finishedAtUnix": 1795453645.71718,
+        "native": {
+          "elapsedMs": 20.398,
+          "invocations": 2,
+          "outputBytes": 91
+        },
+        "scope": "snapshot, managed tests and native start/outcome gates; excludes approval and final receipt verification",
+        "startedAtUnix": 1795453627.400576
+      },
+      "name": "Bastion repository QA",
+      "nativeEngineSha256": "3bc928a1a4057b295a1416b9ff109f39e907887a29676b841e74ef666d67777e",
+      "outputBytes": 8621,
+      "passed": true,
+      "planDigest": "a58c8a5a4f7fbe47dec85ba3f06f0a07749c073b9c436caa0a324bbf4f62c978",
+      "receiptDigest": "ace4d5325f62247e3015cd09c69fd5aac9f48a69a303ba0137bac60b46b5dafb",
+      "schema": "bastion.task-report.v1",
+      "scope": "reviewed local Python QA; host permissions; no live planner, deployment or external-effect reconciliation",
+      "sourceFiles": 29,
+      "state": "passed",
+      "stopReason": null,
+      "task": "8582c6cf94504f8784003cc87a94f490",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "skipped": 0,
+        "testsRun": 92
+      }
+    },
+    "timing": {
+      "schema": "bastion.task-timing.v1",
+      "firstRunCliMs": 18631.887,
+      "receiptReuseCliMs": 177.661,
+      "sampleCount": 1,
+      "scope": "single local observation per operation, includes CLI startup; not a throughput benchmark",
+      "task": "8582c6cf94504f8784003cc87a94f490",
+      "receiptDigest": "ace4d5325f62247e3015cd09c69fd5aac9f48a69a303ba0137bac60b46b5dafb",
+      "passed": true,
+      "nativeConfigured": true
+    },
+    "metrics": {
+      "eventAudit": {
+        "events": 8,
+        "head": "bb91eeeaeb95d73fadd85eac1e3a673d674adbc215fc5d189a53912249ffba4f",
+        "scope": "local-integrity"
+      },
+      "limits": [
+        "No model tokens, spend, inference speed or concurrent-chat capacity is measured.",
+        "Native timings include process startup; calls exclude configure/approval and external child activity.",
+        "Legacy missing timings are unknown, never zero. No background collection or deletion.",
+        "Full event-chain verification is linear in retained history; receipt verification is limited by the requested sample."
+      ],
+      "receiptReuseEvents": 1,
+      "reportExportEvents": 2,
+      "sample": {
+        "executionMs": {
+          "max": 18316.472,
+          "median": 18316.472,
+          "min": 18316.472
+        },
+        "failed": 0,
+        "limit": 100,
+        "measuredExecutions": 1,
+        "nativeElapsedMs": 20.398,
+        "nativeExecutions": 1,
+        "nativeInvocations": 2,
+        "observedTests": 92,
+        "passed": 1,
+        "unmeasuredLegacyReceipts": 0,
+        "verifiedReceipts": 1
+      },
+      "schema": "bastion.metrics.v1",
+      "scope": "state counts are journal totals; receipt statistics cover newest bounded sample; reuse/export counts are durable events",
+      "stateCounts": {
+        "checks": {
+          "passed": 1
+        },
+        "missions": {},
+        "runs": {}
+      }
+    }
+  },
+  "scope": "Actual Bastion repository suite run through the reviewed QA recipe. Single local observations; revisions and host load differ. Not a backend speed comparison.",
+  "limits": [
+    "Trusted Python with host permissions; no OS sandbox.",
+    "No live planner, installed scheduler, provider use or publication.",
+    "Native execution counter covers start/outcome gates, not calls made inside child tests.",
+    "First failed evidence is retained; correction used a fresh task and approval."
+  ],
+  "correctedPython": {
+    "report": {
+      "integrityVerified": true,
+      "metrics": {
+        "executionMs": 21757.916,
+        "finishedAtUnix": 1795453738.976083,
+        "native": null,
+        "scope": "snapshot, managed tests and native start/outcome gates; excludes approval and final receipt verification",
+        "startedAtUnix": 1795453717.2180119
+      },
+      "name": "Bastion repository QA",
+      "nativeEngineSha256": null,
+      "outputBytes": 8621,
+      "passed": true,
+      "planDigest": "9ad52f38c36474dcdcf85db39b5edf650c416758bcb3503a45907420c0765f39",
+      "receiptDigest": "c61e7d00a690e6ea034123dd801026ee4809fe9e909eabb2c1e92925ae7783e7",
+      "schema": "bastion.task-report.v1",
+      "scope": "reviewed local Python QA; host permissions; no live planner, deployment or external-effect reconciliation",
+      "sourceFiles": 29,
+      "state": "passed",
+      "stopReason": null,
+      "task": "3550b62eb3dd49478e22f3a935ef5605",
+      "tests": {
+        "errors": 0,
+        "failures": 0,
+        "passed": true,
+        "skipped": 0,
+        "testsRun": 92
+      }
+    },
+    "timing": {
+      "schema": "bastion.task-timing.v1",
+      "firstRunCliMs": 21934.23,
+      "receiptReuseCliMs": 218.86,
+      "sampleCount": 1,
+      "scope": "single local observation per operation, includes CLI startup; not a throughput benchmark",
+      "task": "3550b62eb3dd49478e22f3a935ef5605",
+      "receiptDigest": "c61e7d00a690e6ea034123dd801026ee4809fe9e909eabb2c1e92925ae7783e7",
+      "passed": true,
+      "nativeConfigured": false
+    },
+    "metrics": {
+      "eventAudit": {
+        "events": 7,
+        "head": "c7c712e2c6ee20efe97e28b9c0935f4992583ca3ced8b7903436d6105b5326dc",
+        "scope": "local-integrity"
+      },
+      "limits": [
+        "No model tokens, spend, inference speed or concurrent-chat capacity is measured.",
+        "Native timings include process startup; calls exclude configure/approval and external child activity.",
+        "Legacy missing timings are unknown, never zero. No background collection or deletion.",
+        "Full event-chain verification is linear in retained history; receipt verification is limited by the requested sample."
+      ],
+      "receiptReuseEvents": 1,
+      "reportExportEvents": 2,
+      "sample": {
+        "executionMs": {
+          "max": 21757.916,
+          "median": 21757.916,
+          "min": 21757.916
+        },
+        "failed": 0,
+        "limit": 100,
+        "measuredExecutions": 1,
+        "nativeElapsedMs": 0,
+        "nativeExecutions": 0,
+        "nativeInvocations": 0,
+        "observedTests": 92,
+        "passed": 1,
+        "unmeasuredLegacyReceipts": 0,
+        "verifiedReceipts": 1
+      },
+      "schema": "bastion.metrics.v1",
+      "scope": "state counts are journal totals; receipt statistics cover newest bounded sample; reuse/export counts are durable events",
+      "stateCounts": {
+        "checks": {
+          "passed": 1
+        },
+        "missions": {},
+        "runs": {}
+      }
+    }
+  },
+  "runtimeDigest": "c067166abb08d6b778c5df4b11d1f5b43840317b2da8d84d731ae095c2ac365a",
+  "candidateVersion": "0.6.0",
+  "published": false
+}

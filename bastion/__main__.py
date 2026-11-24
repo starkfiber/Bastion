@@ -14,6 +14,15 @@ def main():
     parser = argparse.ArgumentParser(description="BASTION model-neutral local harness foundation")
     parser.add_argument("--workspace", default=".")
     commands = parser.add_subparsers(dest="command", required=True)
+    task = commands.add_parser("task").add_subparsers(dest="task_command", required=True)
+    task.add_parser("plan").add_argument("path")
+    task.add_parser("inspect").add_argument("id")
+    command=task.add_parser("report");command.add_argument("id");command.add_argument("--format",choices=("json","markdown","html"),default="json")
+    for action in ("approve","run"):
+        command=task.add_parser(action);command.add_argument("id");command.add_argument("digest")
+    command=task.add_parser("export");command.add_argument("id");command.add_argument("receipt_digest");command.add_argument("destination");command.add_argument("--format",choices=("markdown","html"),default="markdown")
+    command=commands.add_parser("metrics");command.add_argument("--limit",type=int,default=100)
+    command=commands.add_parser("progress");command.add_argument("--cursor");command.add_argument("--limit",type=int,default=50)
     check = commands.add_parser("check").add_subparsers(dest="check_command", required=True)
     check.add_parser("plan").add_argument("path")
     for name in ("inspect", "verify"):
@@ -36,6 +45,7 @@ def main():
     mission = commands.add_parser("mission").add_subparsers(dest="mission_command", required=True)
     mission.add_parser("plan").add_argument("path")
     mission.add_parser("due")
+    command=mission.add_parser("cancel");command.add_argument("id");command.add_argument("digest");command.add_argument("--reason",required=True)
     command = mission.add_parser("tick")
     command.add_argument("--limit", type=int, default=10)
     mission.add_parser("inspect").add_argument("id")
@@ -113,6 +123,28 @@ def main():
             return 0
         runtime = Runtime(store)
         command = args.command
+        if command == "progress":
+            from .progress import changes
+            print(canonical(changes(runtime,args.cursor,args.limit)));return 0
+        if command == "metrics":
+            from .metrics import summary
+            print(canonical(summary(runtime,args.limit)))
+            return 0
+        if command == "task":
+            from . import tasking,checks
+            action=args.task_command
+            if action=="plan": result=tasking.plan(runtime,json.loads(store.project_file(args.path).read_text()))
+            elif action in ("inspect","approve"):
+                result=checks.inspect(runtime,args.id) if action=="inspect" else checks.approve(runtime,args.id,args.digest)
+            elif action=="run": result=tasking.run(runtime,args.id,args.digest)
+            elif action=="export": result=tasking.export(runtime,args.id,args.receipt_digest,args.destination,args.format)
+            else:
+                result=tasking.report(runtime,args.id)
+                if args.format in ("markdown","html"):
+                    print((tasking.html_report if args.format=="html" else tasking.markdown)(result),end="")
+                    return 0
+            print(canonical(result))
+            return 1 if action=="run" and not result['passed'] else 0
         if command == "check":
             from . import checks
             if args.check_command == "plan":
@@ -134,7 +166,9 @@ def main():
         elif command == "mission":
             from . import missions
             action = args.mission_command
-            if action == "plan":
+            if action == "cancel":
+                result=missions.cancel(runtime,args.id,args.digest,args.reason)
+            elif action == "plan":
                 result = missions.plan(runtime, json.loads(store.project_file(args.path).read_text()))
             elif action == "due":
                 result = missions.due(runtime)

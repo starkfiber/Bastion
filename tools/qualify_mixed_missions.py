@@ -9,10 +9,12 @@ import tempfile
 import time
 
 ROOT=Path(__file__).resolve().parents[1]
-ENGINE=(Path.home() / '.codex/plugins/cache/rf2-harness-local/local-ai-harness/0.3.0/bin/rf2-harness')
+sys.path.insert(0, str(ROOT))
+from tests.native_fixture import require_native_fixture
 
 
 def main():
+    engine = require_native_fixture()
     output=ROOT/'evidence/mixed-mission-qualification.json'
     if output.exists(): raise SystemExit('Preserve existing mixed-mission qualification before rerunning')
     workspace=Path(tempfile.mkdtemp(prefix='mixed-mission-',dir=str(ROOT/'evidence')))
@@ -32,7 +34,7 @@ def main():
             return json.loads(result.stderr)
         if result.returncode: raise RuntimeError(result.stderr)
         return json.loads(result.stdout)
-    native=cli('native-configure',str(ENGINE),hashlib.sha256(ENGINE.read_bytes()).hexdigest())
+    native=cli('native-configure',str(engine.path),engine.sha256)
     def wf():
         value={'schema':'bastion.workflow.v1','title':'Native local workflow','nodes':[{'id':'sum','capability':'math.sum_u32','params':{'values':[1,2,3]}}]}
         (workspace/'workflow.json').write_text(json.dumps(value))

@@ -293,7 +293,7 @@ r.run(sys.argv[2],sys.argv[3])
             verify_campaign(self.store, result["campaign"])
 
     def test_lab_budget_retains_incomplete_evidence(self):
-        with patch("bastion.lab.time.monotonic", side_effect=[0, 100, 100]):
+        with patch("bastion.lab.monotonic", side_effect=[0, 100, 100]):
             result = run_campaign(self.store, 2000, max_seconds=1)
         self.assertEqual(result["status"], "budget-exhausted")
         self.assertEqual(result["executedPolicyTrials"], 0)

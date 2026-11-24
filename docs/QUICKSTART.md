@@ -1,3 +1,5 @@
+For an end-to-end reviewed repository QA task and deliverable report, see [Task Edition](TASKS.md). The base workflow demo below remains supported.
+
 # Quick start
 
 ## Requirements
@@ -38,6 +40,8 @@ python3 -m bastion --workspace PROJECT native-configure ABSOLUTE_ENGINE_PATH SHA
 ```
 
 The native engine supplies bounded decisions and checked sums. It does not add model inference, shell authority or an OS sandbox. Configuration changes require new plans. Do not copy a qualified executable path from another user's machine.
+
+Native test fixtures have a separate explicit executable/hash configuration; see [native test setup](NATIVE-TESTS.md). They no longer assume an installed plugin version. Missing optional configuration can skip the three native cases; incorrect explicit configuration fails.
 
 ## MCP host setup
 

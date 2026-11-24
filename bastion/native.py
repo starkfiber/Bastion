@@ -5,6 +5,9 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import selectors
+import signal
+import time
 
 from .core import BastionError, canonical
 
@@ -20,22 +23,53 @@ class NativeEngine:
             raise BastionError("native engine hash mismatch")
         if not os.access(str(self.path), os.X_OK):
             raise BastionError("native engine is not executable")
+        self.stats = {"invocations":0,"elapsedMs":0.0,"outputBytes":0}
         self.identity = {"path": str(self.path), "sha256": sha256, "floorMiB": floor_mib,
                          "contract": "RF2_SYSTEM_A64_V1"}
 
     def call(self, args=(), data=None):
         if hashlib.sha256(self.path.read_bytes()).hexdigest() != self.identity["sha256"]:
             raise BastionError("native engine changed")
+        if data is not None and (not isinstance(data,str) or len(data.encode())>2048):
+            raise BastionError("native input exceeds contract")
+        started = time.monotonic()
+        process = None
+        monitor = selectors.DefaultSelector()
+        output, seen = bytearray(), 0
         try:
-            result = subprocess.run([str(self.path), *map(str, args)], input=data,
-                stdin=subprocess.DEVNULL if data is None else None, text=True,
-                capture_output=True, timeout=5)
-            if len(result.stdout) > 4096:
-                raise BastionError("native response exceeds contract")
-            value = json.loads(result.stdout)
-        except (OSError, ValueError, subprocess.TimeoutExpired) as exc:
+            process = subprocess.Popen([str(self.path), *map(str,args)],
+                stdin=subprocess.PIPE if data is not None else subprocess.DEVNULL,
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
+            self.stats['invocations'] += 1
+            if data is not None:
+                process.stdin.write(data.encode()); process.stdin.close()
+            monitor.register(process.stdout,selectors.EVENT_READ)
+            monitor.register(process.stderr,selectors.EVENT_READ)
+            deadline = started+5
+            while monitor.get_map():
+                if time.monotonic()>=deadline: raise BastionError("native response timed out")
+                for key,_ in monitor.select(min(0.05,max(0,deadline-time.monotonic()))):
+                    chunk=os.read(key.fd,4096)
+                    if not chunk: monitor.unregister(key.fileobj); continue
+                    seen += len(chunk)
+                    if seen>8192: raise BastionError("native response exceeds contract")
+                    if key.fileobj is process.stdout:
+                        output.extend(chunk)
+                        if len(output)>4096: raise BastionError("native response exceeds contract")
+            process.wait(timeout=max(0.01,deadline-time.monotonic()))
+            return process.returncode,json.loads(output)
+        except (OSError,ValueError,subprocess.TimeoutExpired) as exc:
             raise BastionError("native engine unavailable or invalid response") from exc
-        return result.returncode, value
+        finally:
+            if process is not None:
+                try: os.killpg(process.pid,signal.SIGKILL)
+                except ProcessLookupError: pass
+                process.wait()
+                for stream in (process.stdin,process.stdout,process.stderr):
+                    if stream and not stream.closed: stream.close()
+            monitor.close()
+            self.stats['elapsedMs'] += (time.monotonic()-started)*1000
+            self.stats['outputBytes'] += seen
 
     def sum(self, values):
         if not isinstance(values, list) or len(values) > 64 or any(type(v) is not int or not 0 <= v < 2**32 for v in values):
@@ -43,7 +77,7 @@ class NativeEngine:
         rc, value = self.call(data="7 " + str(len(values)) + " " + " ".join(map(str, values)) + "\n")
         if rc == 3 and value == {"error": "overflow"}:
             raise BastionError("u32 overflow")
-        if rc != 0 or set(value) != {"value"} or type(value["value"]) is not int or value["value"] != sum(values):
+        if rc != 0 or not isinstance(value,dict) or set(value) != {"value"} or type(value["value"]) is not int or value["value"] != sum(values):
             raise BastionError("native sum failed independent verification")
         return value["value"]
 

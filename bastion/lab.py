@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 import struct
-import time
+from time import monotonic
 import uuid
 
 from .core import BastionError, canonical, decide, execute_pure
@@ -88,14 +88,14 @@ def run_campaign(store, trials, seed=1, max_seconds=60):
                 "modelCalls": 0, "generatorVersion": 1, "recordBytes": ROW.size}
     (root / "manifest.json").write_text(canonical(manifest) + "\n")
     (root / "summary.json").write_text(canonical({"status": "running", "executed": 0}) + "\n")
-    started = time.monotonic()
+    started = monotonic()
     executed = failures = allowed_count = 0
     kinds = [0] * 8
     hasher = hashlib.sha256()
     with (root / "trials.bin").open("xb") as stream:
         buffer = bytearray()
         for index in range(trials):
-            if index % 1000 == 0 and time.monotonic() - started >= max_seconds:
+            if index % 1000 == 0 and monotonic() - started >= max_seconds:
                 break
             packed, failed, allowed, kind = trial(index, seed)
             buffer.extend(packed)
@@ -118,7 +118,7 @@ def run_campaign(store, trials, seed=1, max_seconds=60):
                "requested": trials, "executedPolicyTrials": executed, "executedKernelFixtures": executed,
                "uniquePolicyCombinations": min(executed, COMBINATIONS), "kernelFamilies": kinds,
                "mismatches": failures, "allowedDecisions": allowed_count,
-               "deniedDecisions": executed - allowed_count, "seconds": time.monotonic() - started,
+               "deniedDecisions": executed - allowed_count, "seconds": monotonic() - started,
                "ledgerBytes": executed * ROW.size, "ledgerSHA256": hasher.hexdigest(),
                "scope": manifest["scope"], "modelCalls": 0, "externalRequests": 0,
                "realWorldExperiences": 0, "learningPromotions": 0}

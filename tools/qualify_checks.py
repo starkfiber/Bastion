@@ -7,7 +7,8 @@ import sys
 import tempfile
 
 ROOT=Path(__file__).resolve().parents[1]
-ENGINE=(Path.home() / '.codex/plugins/cache/rf2-harness-local/local-ai-harness/0.3.0/bin/rf2-harness')
+sys.path.insert(0, str(ROOT))
+from tests.native_fixture import require_native_fixture
 TESTS='''import unittest
 from bastion.core import BastionError, decide, execute_pure, validate_workflow
 class KernelTests(unittest.TestCase):
@@ -24,6 +25,7 @@ class KernelTests(unittest.TestCase):
 
 
 def main():
+    engine = require_native_fixture()
     output=ROOT/'evidence/check-edition-qualification.json'
     if output.exists(): raise SystemExit('Preserve existing qualification before an intentional rerun')
     workspace=Path(tempfile.mkdtemp(prefix='check-edition-',dir=str(ROOT/'evidence')))
@@ -41,7 +43,7 @@ def main():
         if r.returncode: raise RuntimeError(r.stderr)
         return json.loads(r.stdout)
 
-    native=cli('native-configure',str(ENGINE),hashlib.sha256(ENGINE.read_bytes()).hexdigest())
+    native=cli('native-configure',str(engine.path),engine.sha256)
     def execute_case():
         p=cli('check','plan','check.json')
         cli('check','approve',p['check'],p['digest'])
